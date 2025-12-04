@@ -1,22 +1,21 @@
-name: Ejecutar pruebas (CI)
+name: Run Django Tests
 
 on:
   push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
 
 jobs:
-  tests:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.10"
 
       - name: Install dependencies
         run: |
@@ -25,9 +24,13 @@ jobs:
           pip install pytest pytest-django
 
       - name: Run migrations
-        run: python manage.py migrate --noinput
-        working-directory: ./CineAventura
+        env:
+          DJANGO_SETTINGS_MODULE: cineAventura.settings
+        run: |
+          python manage.py migrate --noinput
 
       - name: Run tests
-        run: pytest
-        working-directory: ./CineAventura
+        env:
+          DJANGO_SETTINGS_MODULE: cineAventura.settings
+        run: |
+          pytest
