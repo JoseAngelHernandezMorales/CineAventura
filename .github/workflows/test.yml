@@ -11,8 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -26,11 +25,9 @@ jobs:
           pip install pytest pytest-django
 
       - name: Run migrations
-        env:
-          DJANGO_SETTINGS_MODULE: cineAventura.settings
         run: python manage.py migrate --noinput
+        working-directory: ./CineAventura
 
       - name: Run tests
-        env:
-          DJANGO_SETTINGS_MODULE: cineAventura.settings
         run: pytest
+        working-directory: ./CineAventura
