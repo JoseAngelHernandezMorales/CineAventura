@@ -1,42 +1,38 @@
 name: Run Django Tests
-
 on:
   push:
+    branches: [ main, master ]
   pull_request:
+    branches: [ main, master ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-
+      
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-django
-
+      
+      - name: Create test .env file
+        run: |
+          echo "SECRET_KEY=test-secret-key-for-ci-cd-pipeline-testing-only-12345" > .env
+          echo "DEBUG=True" >> .env
+          echo "ALLOWED_HOSTS=localhost,127.0.0.1" >> .env
+      
       - name: Run migrations
-        env:
-          DJANGO_SETTINGS_MODULE: cineAventura.settings
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DEBUG: ${{ secrets.DEBUG }}
-          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
           python manage.py migrate --noinput
-
+      
       - name: Run tests
-        env:
-          DJANGO_SETTINGS_MODULE: cineAventura.settings
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DEBUG: ${{ secrets.DEBUG }}
-          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
-          pytest
+          pytest -v --cov=peliculas --cov-report=term-missing
