@@ -27,6 +27,8 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: cineAventura.settings
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: ${{ secrets.DEBUG }}
+          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
           python manage.py migrate --noinput
 
@@ -34,5 +36,7 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: cineAventura.settings
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: ${{ secrets.DEBUG }}
+          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
           pytest
